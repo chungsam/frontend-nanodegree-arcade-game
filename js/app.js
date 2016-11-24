@@ -6,8 +6,10 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
+
     this.x = Math.random() * 505
-    this.y = 0;
+    this.y = 100;
+    this.movementSpeed = Math.random() * 2;
 };
 
 // Update the enemy's position, required method for game
@@ -16,8 +18,15 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    this.x * dt;
-    this.y * dt;
+    
+    var reachRowEnd = false;
+
+    if (this.x > 606) {
+        this.x = 0;
+    } else {
+        this.x += this.movementSpeed;
+    }
+
 };
 
 // Draw the enemy on the screen, required method for game
@@ -46,9 +55,9 @@ Player.prototype.render = function() {
 Player.prototype.handleInput = function(inputKey) {
     var xDistance = 100;
     var yDistance = 82;
-    
+
     if (inputKey === 'left') {
-        if (this.x > 50) { //validate against canvas edges
+        if (this.x > 50) { // stop from going beyond canvas edge
             this.x -= xDistance;
         }
     } else if (inputKey === 'up') {
@@ -64,10 +73,8 @@ Player.prototype.handleInput = function(inputKey) {
             this.y += yDistance;
         }
     } else {
-        console.log("Please press one of the arrow keys");
-    }
-    console.log(this.x, this.y)
-    
+        console.log("Please use one of the arrow keys");
+    }    
 }
 
 
