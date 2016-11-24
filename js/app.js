@@ -6,6 +6,8 @@ var Enemy = function() {
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
+    this.x = Math.random() * 505
+    this.y = 0;
 };
 
 // Update the enemy's position, required method for game
@@ -14,6 +16,8 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    this.x * dt;
+    this.y * dt;
 };
 
 // Draw the enemy on the screen, required method for game
@@ -24,11 +28,61 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+var Player = function() {
+    this.sprite = 'images/char-boy.png';
+    this.x = (505 / 5) * 2 ; 
+    this.y = 400;
+}
+
+Player.prototype.update = function(dt) {
+    this.x * dt;
+    this.y * dt;
+}
+
+Player.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+Player.prototype.handleInput = function(inputKey) {
+    var xDistance = 100;
+    var yDistance = 82;
+    
+    if (inputKey === 'left') {
+        if (this.x > 50) { //validate against canvas edges
+            this.x -= xDistance;
+        }
+    } else if (inputKey === 'up') {
+        if (this.y > 10) {
+            this.y -= yDistance;
+        }
+    } else if (inputKey === 'right') {
+        if (this.x < 400) {
+            this.x += xDistance;
+        }
+    } else if (inputKey === 'down') {
+        if (this.y < 390) {
+            this.y += yDistance;
+        }
+    } else {
+        console.log("Please press one of the arrow keys");
+    }
+    console.log(this.x, this.y)
+    
+}
 
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
+var allEnemies = [];
+var player = new Player();
+var loadEnemies = function() {
+    for (i = 0; i < 3; i++) {
+        allEnemies.push(new Enemy());
+    }
+    
+}
+loadEnemies();
 
 
 
