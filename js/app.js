@@ -8,9 +8,10 @@ var Enemy = function() {
     this.sprite = 'images/enemy-bug.png';
 
     this.x = Math.random() * 505
-    this.y = 100;
+    this.y =  60 + (82 * Math.round(Math.random() * 2));
     this.movementSpeed = Math.random() * 2;
 };
+
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -74,7 +75,9 @@ Player.prototype.handleInput = function(inputKey) {
         }
     } else {
         console.log("Please use one of the arrow keys");
-    }    
+    }
+
+    console.log(this.x, this.y);
 }
 
 
