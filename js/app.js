@@ -4,10 +4,13 @@
 // Add start screen
 // Add level end screen
 
-var game = {
+var gameState = {
     state: {
         level: 1,
         score: 0,
+    },
+    settings: {
+        difficulty: 1
     }
 }
 
@@ -29,7 +32,7 @@ var Enemy = function () {
 
     this.x = Math.random() * 505
     this.y = 60 + (82 * Math.round(Math.random() * 2));
-    this.movementSpeed = Math.random() * 2 * game.state.level;
+    this.movementSpeed = Math.random() * 2 * gameState.state.level;
 };
 
 
@@ -46,7 +49,7 @@ Enemy.prototype.update = function (dt) {
         this.x += this.movementSpeed;
     }
 
-    drawScoreboard(game.state.level, game.state.score);
+    drawScoreboard(gameState.state.level, gameState.state.score);
     this.collideWithPlayer();
 
 };
