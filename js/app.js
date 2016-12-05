@@ -21,6 +21,7 @@ var drawScoreboard = function (level, score) {
 }
 
 var resetGame = function() {
+    // TODO: add animation? (ie. make player spin or something)
     player.x = xStartLocation;
 }
 
@@ -58,7 +59,7 @@ Enemy.prototype.update = function (dt) {
     }
 
     drawScoreboard(gameState.state.level, gameState.state.score);
-    this.collideWithPlayer();
+    this.checkCollisionWithPlayer();
 
 };
 
@@ -70,11 +71,12 @@ Enemy.prototype.render = function () {
 /**
  * Checks whether the Enemy collided with player
  */
-Enemy.prototype.collideWithPlayer = function () {
+Enemy.prototype.checkCollisionWithPlayer = function () {
 
     // TODO: adjust sprite width and height
     var spriteWidth = 100;
     var spriteHeight = 100;
+
     if (player.x >= this.x &&
         player.x < this.x + spriteWidth &&
         player.y >= this.y &&
@@ -91,7 +93,7 @@ Enemy.prototype.collideWithPlayer = function () {
 // a handleInput() method.
 var Player = function () {
     this.sprite = 'images/char-boy.png';
-    
+
     this.xStartLocation = (505 / 5) * 2;
     this.x = this.xStartLocation;
 
@@ -102,6 +104,8 @@ var Player = function () {
 Player.prototype.update = function (dt) {
     this.x * dt;
     this.y * dt;
+
+    this.checkWaterReached();
 }
 
 Player.prototype.render = function () {
@@ -130,6 +134,13 @@ Player.prototype.handleInput = function (inputKey) {
         }
     } else {
         console.log("Please use one of the arrow keys");
+    }
+}
+
+Player.prototype.checkWaterReached = function() {
+    var yWaterPosition = 50;
+    if (this.y < yWaterPosition) {
+        console.log('Water reached!'); // TODO: Remove after testing
     }
 }
 
