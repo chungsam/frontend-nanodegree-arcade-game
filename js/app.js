@@ -20,7 +20,7 @@ var drawScoreboard = function (level, score) {
     ctx.fillText("Score: " + score, 400, 20);
 }
 
-var resetGame = function() {
+var resetGame = function () {
     // TODO: add animation? (ie. make player spin or something)
     player.x = xStartLocation;
 }
@@ -59,7 +59,6 @@ Enemy.prototype.update = function (dt) {
     }
 
     drawScoreboard(gameState.state.level, gameState.state.score);
-    this.checkCollisionWithPlayer();
 
 };
 
@@ -68,25 +67,6 @@ Enemy.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-/**
- * Checks whether the Enemy collided with player
- */
-Enemy.prototype.checkCollisionWithPlayer = function () {
-
-    // TODO: adjust sprite width and height
-    var spriteWidth = 100;
-    var spriteHeight = 100;
-
-    if (player.x >= this.x &&
-        player.x < this.x + spriteWidth &&
-        player.y >= this.y &&
-        player.y < this.y + spriteHeight
-    ) {
-        console.log("COLLIDED!"); // TODO: Remove after testing
-    }
-    // call when player.x is close to enemy.x
-    // put this logic inside of enemy.prototype.update?
-}
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -105,6 +85,7 @@ Player.prototype.update = function (dt) {
     this.x * dt;
     this.y * dt;
 
+    this.checkCollisionWithEnemy(allEnemies);
     this.checkWaterReached();
 }
 
@@ -137,7 +118,29 @@ Player.prototype.handleInput = function (inputKey) {
     }
 }
 
-Player.prototype.checkWaterReached = function() {
+/**
+ * Checks whether the Enemy collided with player
+ */
+
+Player.prototype.checkCollisionWithEnemy = function (Enemies) {
+
+    Enemies.forEach(function (enemy) {
+        // TODO: adjust sprite width and height
+        var spriteWidth = 100;
+        var spriteHeight = 100;
+
+        if (player.x >= enemy.x &&
+            player.x < enemy.x + spriteWidth &&
+            player.y >= enemy.y &&
+            player.y < enemy.y + spriteHeight
+        ) {
+            console.log("COLLIDED!"); // TODO: Remove after testing
+        }
+
+    })
+}
+
+Player.prototype.checkWaterReached = function () {
     var yWaterPosition = 50;
     if (this.y < yWaterPosition) {
         console.log('Water reached!'); // TODO: Remove after testing
