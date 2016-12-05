@@ -20,6 +20,10 @@ var drawScoreboard = function (level, score) {
     ctx.fillText("Score: " + score, 400, 20);
 }
 
+var resetGame = function() {
+    player.x = xStartLocation;
+}
+
 
 // Enemies our player must avoid
 var Enemy = function () {
@@ -30,8 +34,12 @@ var Enemy = function () {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
 
-    this.x = Math.random() * 505
-    this.y = 60 + (82 * Math.round(Math.random() * 2));
+    this.xStartLocation = Math.random() * 505
+    this.x = this.xStartLocation;
+
+    this.yStartLocation = 60 + (82 * Math.round(Math.random() * 2));
+    this.y = this.yStartLocation;
+
     this.movementSpeed = Math.random() * 2 * gameState.state.level;
 };
 
@@ -83,8 +91,12 @@ Enemy.prototype.collideWithPlayer = function () {
 // a handleInput() method.
 var Player = function () {
     this.sprite = 'images/char-boy.png';
-    this.x = (505 / 5) * 2;
-    this.y = 400;
+    
+    this.xStartLocation = (505 / 5) * 2;
+    this.x = this.xStartLocation;
+
+    this.yStartLocation = 400;
+    this.y = this.yStartLocation;
 }
 
 Player.prototype.update = function (dt) {
