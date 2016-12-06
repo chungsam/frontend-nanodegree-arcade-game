@@ -22,7 +22,10 @@ var drawScoreboard = function (level, score) {
 
 var resetGame = function () {
     // TODO: add animation? (ie. make player spin or something)
-    player.x = xStartLocation;
+    player.x = player.xStartLocation;
+    player.y = player.yStartLocation;
+
+    console.log('Game reset!');
 }
 
 
@@ -85,8 +88,11 @@ Player.prototype.update = function (dt) {
     this.x * dt;
     this.y * dt;
 
-    this.checkCollisionWithEnemy(allEnemies);
-    this.checkWaterReached();
+    if(this.collidedWithEnemy(allEnemies) ||
+        this.WaterReached()) {
+        resetGame();
+    };
+
 }
 
 Player.prototype.render = function () {
@@ -122,7 +128,8 @@ Player.prototype.handleInput = function (inputKey) {
  * Checks whether the Enemy collided with player
  */
 
-Player.prototype.checkCollisionWithEnemy = function (Enemies) {
+Player.prototype.collidedWithEnemy = function (Enemies) {
+    var collided = false;
 
     Enemies.forEach(function (enemy) {
         // TODO: adjust sprite width and height
@@ -134,16 +141,20 @@ Player.prototype.checkCollisionWithEnemy = function (Enemies) {
             player.y >= enemy.y &&
             player.y < enemy.y + spriteHeight
         ) {
-            console.log("COLLIDED!"); // TODO: Remove after testing
+            console.log('COLLIDED!'); // TODO: Remove after testing
+            collided = true;
         }
 
     })
+
+    return collided;
 }
 
-Player.prototype.checkWaterReached = function () {
+Player.prototype.WaterReached = function () {
     var yWaterPosition = 50;
     if (this.y < yWaterPosition) {
         console.log('Water reached!'); // TODO: Remove after testing
+        return true;
     }
 }
 
