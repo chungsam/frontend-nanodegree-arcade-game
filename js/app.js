@@ -3,16 +3,22 @@
 // Add gems and other items to get more points
 // Add start screen
 // Add level end screen
+// Add helper functions for random object placement
 
 // Start the game with default state
 var gameState = {
-    state: {
+    initialState: {
         level: 1,
         score: 0,
-    },
-    settings: {
         difficulty: 1
-    }
+    },
+};
+
+var startNewGame = function() {
+    gameState.currentState = gameState.initialState;
+    loadEnemies(allEnemies);
+    loadBonusItems(allBonusItems);
+    player = new Player();
 }
 
 // Show the score
@@ -20,15 +26,38 @@ var drawScoreboard = function (level, score) {
     ctx.font = "20px Helvetica";
     ctx.fillText("Level: " + level, 210, 20);
     ctx.fillText("Score: " + score, 400, 20);
-}
+};
 
 var resetGame = function () {
     // TODO: add animation? (ie. make player spin or something)
-    player.x = player.xStartLocation;
-    player.y = player.yStartLocation;
+    player.resetPosition();
+    startNewGame();
 
     console.log('Game reset!');
 }
+
+var advanceNextLevel = function() {
+    player.resetPosition();
+    gameState.state.level += 1;
+    console.log('Advancing to level ' + gameState.state.level);
+}
+
+// Helper functions
+var randomXYPlacement = function(object) {
+    // TODO: Check object type and assign based on result?
+    // x coordinate should be different for moving items vs. static items
+    // or it will not be placed properly
+    object.x = Math.random() * 505;
+    object.y = 60 + (82 * Math.round(Math.random() * 2));
+}
+
+var printGameState = function(gameState) {
+    console.log('***Current State***');
+    console.log('Level: ' + gameState.currentState.level);
+    console.log('Score: ' + gameState.currentState.score);
+    console.log('Difficulty: ' + gameState.currentState.difficulty);
+}
+
 
 
 // Enemies our player must avoid
@@ -46,7 +75,7 @@ var Enemy = function () {
     this.yStartLocation = 60 + (82 * Math.round(Math.random() * 2));
     this.y = this.yStartLocation;
 
-    this.movementSpeed = Math.random() * 2 * gameState.state.level;
+    this.movementSpeed = Math.random() * 2 * gameState.currentState.level;
 };
 
 
@@ -63,7 +92,7 @@ Enemy.prototype.update = function (dt) {
         this.x += this.movementSpeed;
     }
 
-    drawScoreboard(gameState.state.level, gameState.state.score);
+    drawScoreboard(gameState.currentState.level, gameState.currentState.score);
 
 };
 
@@ -90,10 +119,11 @@ Player.prototype.update = function (dt) {
     this.x * dt;
     this.y * dt;
 
-    if(this.collidedWithEnemy(allEnemies) ||
-        this.WaterReached()) {
+    if(this.collidedWithEnemy(allEnemies)) {
         resetGame();
-    };
+    } else if (this.WaterReached()) {
+        advanceNextLevel();
+    }
 
 }
 
@@ -124,6 +154,11 @@ Player.prototype.handleInput = function (inputKey) {
     } else {
         console.log("Please use one of the arrow keys");
     }
+}
+
+Player.prototype.resetPosition = function() {
+    this.x = this.xStartLocation;
+    this.y = this.yStartLocation;
 }
 
 /**
@@ -161,7 +196,7 @@ Player.prototype.WaterReached = function () {
 }
 
 // Bonus Items
-var bonusItems = [];
+var allBonusItems = [];
 
 // A blue gem that awards 50 points
 var BlueGem = function() {
@@ -193,32 +228,24 @@ var loadBonusItems = function(items) {
     items.push(new Star());
 }
 
-loadBonusItems(bonusItems);
 
 // Obstacles
 var obstacles = [];
 
+var Rock = function() {
+    this.x = Math.random() * 505;
+    this.y = 60 + (82 * Math.round(Math.Random() * 2));
+}
 
-
-
-// Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [];
 
-var loadEnemies = function () {
+var loadEnemies = function (enemies) {
     for (i = 0; i < 3; i++) {
-        allEnemies.push(new Enemy());
+        enemies.push(new Enemy());
     }
 
 }
-
-loadEnemies();
-
-// Place the player object in a variable called player
-var player = new Player();
-
-
-
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -232,3 +259,6 @@ document.addEventListener('keyup', function (e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
+// Start the game with initial
+startNewGame();

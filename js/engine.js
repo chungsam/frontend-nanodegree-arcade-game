@@ -153,7 +153,7 @@ var Engine = (function(global) {
 
         player.render();
 
-        bonusItems.forEach(function(item){
+        allBonusItems.forEach(function(item){
             item.render();
         });
     }
