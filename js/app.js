@@ -38,7 +38,7 @@ var Enemy = function () {
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
 
-    this.xStartLocation = Math.random() * 505
+    this.xStartLocation = Math.random() * 505;
     this.x = this.xStartLocation;
 
     this.yStartLocation = 60 + (82 * Math.round(Math.random() * 2));
@@ -158,21 +158,45 @@ Player.prototype.WaterReached = function () {
     }
 }
 
+// Bonus Items
+var BlueGem = function() {
+    this.sprite = 'images/Gem Blue.png';
+
+    this.x = Math.random() * 505;
+    this.y = 60 + (82 * Math.round(Math.random() * 2));
+}
+
+BlueGem.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
 var allEnemies = [];
-var player = new Player();
+
 var loadEnemies = function () {
     for (i = 0; i < 3; i++) {
         allEnemies.push(new Enemy());
     }
 
 }
+
 loadEnemies();
 
+// Place the player object in a variable called player
+var player = new Player();
 
+// All bonusItems in a variable called bonusItems
+var bonusItems = [];
+
+var loadBonusItems = function(items) {
+    items.push(new BlueGem());
+    items.push(new BlueGem());
+    items.push(new BlueGem());
+}
+
+loadBonusItems(bonusItems);
 
 
 // This listens for key presses and sends the keys to your
