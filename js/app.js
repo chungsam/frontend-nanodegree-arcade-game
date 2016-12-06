@@ -4,6 +4,7 @@
 // Add start screen
 // Add level end screen
 
+// Start the game with default state
 var gameState = {
     state: {
         level: 1,
@@ -14,6 +15,7 @@ var gameState = {
     }
 }
 
+// Show the score
 var drawScoreboard = function (level, score) {
     ctx.font = "20px Helvetica";
     ctx.fillText("Level: " + level, 210, 20);
@@ -159,6 +161,9 @@ Player.prototype.WaterReached = function () {
 }
 
 // Bonus Items
+var bonusItems = [];
+
+// A blue gem that awards 50 points
 var BlueGem = function() {
     this.sprite = 'images/Gem Blue.png';
 
@@ -169,6 +174,31 @@ var BlueGem = function() {
 BlueGem.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
+
+// A star that makes the player invincible
+var Star = function() {
+    this.sprite = 'images/Star.png';
+
+    this.x = Math.random() * 505;
+    this.y = 60 + (82 * Math.round(Math.random() * 2));
+}
+
+Star.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+// Load all the bonus items
+var loadBonusItems = function(items) {
+    items.push(new BlueGem());
+    items.push(new Star());
+}
+
+loadBonusItems(bonusItems);
+
+// Obstacles
+var obstacles = [];
+
+
 
 
 // Now instantiate your objects.
@@ -187,16 +217,7 @@ loadEnemies();
 // Place the player object in a variable called player
 var player = new Player();
 
-// All bonusItems in a variable called bonusItems
-var bonusItems = [];
 
-var loadBonusItems = function(items) {
-    items.push(new BlueGem());
-    items.push(new BlueGem());
-    items.push(new BlueGem());
-}
-
-loadBonusItems(bonusItems);
 
 
 // This listens for key presses and sends the keys to your
