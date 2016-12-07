@@ -11,7 +11,7 @@ var gameState = {
         level: 1,
         score: 0,
         difficulty: 1
-    },
+    }
 };
 
 var startNewGame = function() {
@@ -30,7 +30,9 @@ var drawScoreboard = function (level, score) {
 
 var resetGame = function () {
     // TODO: add animation? (ie. make player spin or something)
-    player.resetPosition();
+    // player.resetPosition();
+    allEnemies = [];
+    allBonusItems = [];
     startNewGame();
 
     console.log('Game reset!');
@@ -230,19 +232,23 @@ var loadBonusItems = function(items) {
 
 
 // Obstacles
-var obstacles = [];
+var allObstacles = [];
 
 var Rock = function() {
     this.x = Math.random() * 505;
     this.y = 60 + (82 * Math.round(Math.Random() * 2));
 }
 
+var loadObstacles = function() {
+    allObstacles.push(new Rock());
+}
+
 // Place all enemy objects in an array called allEnemies
 var allEnemies = [];
 
-var loadEnemies = function (enemies) {
+var loadEnemies = function () {
     for (i = 0; i < 3; i++) {
-        enemies.push(new Enemy());
+        allEnemies.push(new Enemy());
     }
 
 }
@@ -260,5 +266,4 @@ document.addEventListener('keyup', function (e) {
     player.handleInput(allowedKeys[e.keyCode]);
 });
 
-// Start the game with initial
 startNewGame();
