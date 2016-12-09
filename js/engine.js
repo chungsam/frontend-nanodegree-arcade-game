@@ -156,6 +156,10 @@ var Engine = (function(global) {
         allBonusItems.forEach(function(item){
             item.render();
         });
+
+        allObstacles.forEach(function(obstacle) {
+            obstacle.render();
+        })
     }
 
     /* This function does nothing but it could have been a good place to

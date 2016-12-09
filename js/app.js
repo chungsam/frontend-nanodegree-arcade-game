@@ -10,20 +10,38 @@ var gameState = {
     initialState: {
         level: 1,
         score: 0,
-        difficulty: 1
-    }
+    },
+    currentState: {}
 };
+
+var resetGameState = function(gameState) {
+    gameState.currentState.level = 1;
+    gameState.currentState.score = 0;
+}
 
 var startNewGame = function() {
     gameState.currentState = gameState.initialState;
-    loadEnemies(allEnemies);
-    loadBonusItems(allBonusItems);
+    resetGameState(gameState);
+    
+    loadEnemies();
+    loadBonusItems();
+    loadObstacles();
+
     player = new Player();
-}
+
+    printGameState(gameState); // TODO: Remove after testing
+};
 
 // Show the score
 var drawScoreboard = function (level, score) {
+    // TODO: clear text for previous score/level
+    // and rename function to something else
+
     ctx.font = "20px Helvetica";
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, 600, 50); // Clear the previous stroke for level and score
+
+    ctx.fillStyle = "black";
     ctx.fillText("Level: " + level, 210, 20);
     ctx.fillText("Score: " + score, 400, 20);
 };
@@ -33,6 +51,9 @@ var resetGame = function () {
     // player.resetPosition();
     allEnemies = [];
     allBonusItems = [];
+    allObstacles = [];
+    resetGameState(gameState);
+
     startNewGame();
 
     console.log('Game reset!');
@@ -40,8 +61,14 @@ var resetGame = function () {
 
 var advanceNextLevel = function() {
     player.resetPosition();
-    gameState.state.level += 1;
-    console.log('Advancing to level ' + gameState.state.level);
+    gameState.currentState.level += 1;
+
+    allEnemies = [];
+    loadEnemies();
+
+    console.log('Advancing to level ' + gameState.currentState.level);
+
+    printGameState(gameState); // TODO: Remove after testing
 }
 
 // Helper functions
@@ -57,7 +84,6 @@ var printGameState = function(gameState) {
     console.log('***Current State***');
     console.log('Level: ' + gameState.currentState.level);
     console.log('Score: ' + gameState.currentState.score);
-    console.log('Difficulty: ' + gameState.currentState.difficulty);
 }
 
 
@@ -91,7 +117,7 @@ Enemy.prototype.update = function (dt) {
     if (this.x > 606) {
         this.x = 0;
     } else {
-        this.x += this.movementSpeed;
+        (this.x += this.movementSpeed) * dt;
     }
 
     drawScoreboard(gameState.currentState.level, gameState.currentState.score);
@@ -225,9 +251,9 @@ Star.prototype.render = function() {
 }
 
 // Load all the bonus items
-var loadBonusItems = function(items) {
-    items.push(new BlueGem());
-    items.push(new Star());
+var loadBonusItems = function() {
+    allBonusItems.push(new BlueGem());
+    allBonusItems.push(new Star());
 }
 
 
@@ -235,8 +261,13 @@ var loadBonusItems = function(items) {
 var allObstacles = [];
 
 var Rock = function() {
+    this.sprite = 'images/Rock.png';
     this.x = Math.random() * 505;
-    this.y = 60 + (82 * Math.round(Math.Random() * 2));
+    this.y = 60 + (82 * Math.round(Math.random() * 2));
+}
+
+Rock.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
 var loadObstacles = function() {
