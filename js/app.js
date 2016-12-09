@@ -10,6 +10,7 @@ var gameState = {
     initialState: {
         level: 1,
         score: 0,
+        highScore: 0
     },
     currentState: {}
 };
@@ -17,6 +18,7 @@ var gameState = {
 var resetGameState = function(gameState) {
     gameState.currentState.level = 1;
     gameState.currentState.score = 0;
+    gameState.currentState.highScore = 0;
 }
 
 var startNewGame = function() {
@@ -33,7 +35,7 @@ var startNewGame = function() {
 };
 
 // Show the score
-var drawScoreboard = function (level, score) {
+var drawScoreboard = function (level, score, highScore) {
     // TODO: clear text for previous score/level
     // and rename function to something else
 
@@ -42,6 +44,7 @@ var drawScoreboard = function (level, score) {
     ctx.fillRect(0, 0, 600, 50); // Clear the previous stroke for level and score
 
     ctx.fillStyle = "black";
+    ctx.fillText("High Score: " + highScore, 0, 20);
     ctx.fillText("Level: " + level, 210, 20);
     ctx.fillText("Score: " + score, 400, 20);
 };
@@ -120,7 +123,9 @@ Enemy.prototype.update = function (dt) {
         (this.x += this.movementSpeed) * dt;
     }
 
-    drawScoreboard(gameState.currentState.level, gameState.currentState.score);
+    drawScoreboard(gameState.currentState.level,
+                    gameState.currentState.score,
+                    gameState.currentState.highScore);
 
 };
 
