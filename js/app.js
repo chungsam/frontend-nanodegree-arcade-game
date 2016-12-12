@@ -15,16 +15,15 @@ var gameState = {
     currentState: {}
 };
 
-var resetGameState = function(gameState) {
+var resetGameState = function (gameState) {
     gameState.currentState.level = 1;
     gameState.currentState.score = 0;
     gameState.currentState.highScore = 0;
 }
 
-var startNewGame = function() {
-    gameState.currentState = gameState.initialState;
+var startNewGame = function () {
     resetGameState(gameState);
-    
+
     loadEnemies();
     loadBonusItems();
     loadObstacles();
@@ -62,7 +61,7 @@ var resetGame = function () {
     console.log('Game reset!');
 }
 
-var advanceNextLevel = function() {
+var advanceNextLevel = function () {
     player.resetPosition();
     gameState.currentState.level += 1;
 
@@ -75,15 +74,19 @@ var advanceNextLevel = function() {
 }
 
 // Helper functions
-var randomXYPlacement = function(object) {
-    // TODO: Check object type and assign based on result?
-    // x coordinate should be different for moving items vs. static items
-    // or it will not be placed properly
-    object.x = Math.random() * 505;
-    object.y = 60 + (82 * Math.round(Math.random() * 2));
+var randomXYPlacement = function (object) {
+    // Coordinates are different for moving items vs. static items
+    if (object instanceof Star |
+        object instanceof Rock |
+        object instanceof BlueGem) {
+        object.x = Math.round(Math.random() * 4) * 100;
+        object.y = 60 + (Math.round(Math.random() * 2) * 82);
+
+    }
+
 }
 
-var printGameState = function(gameState) {
+var printGameState = function (gameState) {
     console.log('***Current State***');
     console.log('Level: ' + gameState.currentState.level);
     console.log('Score: ' + gameState.currentState.score);
@@ -124,8 +127,8 @@ Enemy.prototype.update = function (dt) {
     }
 
     drawScoreboard(gameState.currentState.level,
-                    gameState.currentState.score,
-                    gameState.currentState.highScore);
+        gameState.currentState.score,
+        gameState.currentState.highScore);
 
 };
 
@@ -146,13 +149,15 @@ var Player = function () {
 
     this.yStartLocation = 400;
     this.y = this.yStartLocation;
+
+    this.invincible = false;
 }
 
 Player.prototype.update = function (dt) {
     this.x * dt;
     this.y * dt;
 
-    if(this.collidedWithEnemy(allEnemies)) {
+    if (this.collidedWithEnemy(allEnemies)) {
         resetGame();
     } else if (this.WaterReached()) {
         advanceNextLevel();
@@ -189,7 +194,7 @@ Player.prototype.handleInput = function (inputKey) {
     }
 }
 
-Player.prototype.resetPosition = function() {
+Player.prototype.resetPosition = function () {
     this.x = this.xStartLocation;
     this.y = this.yStartLocation;
 }
@@ -232,31 +237,41 @@ Player.prototype.WaterReached = function () {
 var allBonusItems = [];
 
 // A blue gem that awards 50 points
-var BlueGem = function() {
+var BlueGem = function () {
     this.sprite = 'images/Gem Blue.png';
 
-    this.x = Math.random() * 505;
-    this.y = 60 + (82 * Math.round(Math.random() * 2));
+    randomXYPlacement(this);
 }
 
-BlueGem.prototype.render = function() {
+BlueGem.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
+
+BlueGem.prototype.bonusPoints = 50;
 
 // A star that makes the player invincible
-var Star = function() {
+var Star = function () {
     this.sprite = 'images/Star.png';
 
-    this.x = Math.random() * 505;
-    this.y = 60 + (82 * Math.round(Math.random() * 2));
+    randomXYPlacement(this);
+
+    console.log(this.x);
+    console.log(this.y);
 }
 
-Star.prototype.render = function() {
+Star.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+Star.prototype.giveInvincibility = function () {
+    if (this.x === player.x &
+        this.y === player.y) {
+        player.invincible = true;
+    }
 }
 
 // Load all the bonus items
-var loadBonusItems = function() {
+var loadBonusItems = function () {
     allBonusItems.push(new BlueGem());
     allBonusItems.push(new Star());
 }
@@ -265,17 +280,17 @@ var loadBonusItems = function() {
 // Obstacles
 var allObstacles = [];
 
-var Rock = function() {
+var Rock = function () {
     this.sprite = 'images/Rock.png';
-    this.x = Math.random() * 505;
-    this.y = 60 + (82 * Math.round(Math.random() * 2));
+    
+    randomXYPlacement(this);
 }
 
-Rock.prototype.render = function() {
+Rock.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-var loadObstacles = function() {
+var loadObstacles = function () {
     allObstacles.push(new Rock());
 }
 
