@@ -95,41 +95,35 @@ var printGameState = function (gameState) {
 var playerAtCanvasEdge = function(player, edge) {
     if (edge == "left") {
         var edgeBuffer = 50;
-        if (player.x > edgeBuffer) {
-            return false;
-        }
+        if (player.x > edgeBuffer) { return false; }
         return true;
     } else if (edge == "top") {
         var edgeBuffer = 10;
-        if (player.y > edgeBuffer) {
-            return false;
-        }
+        if (player.y > edgeBuffer) { return false; }
         return true;
     } 
     else if (edge == "right") {
         var edgeBuffer = 400;
-        if (player.x < edgeBuffer) {
-            return false;
-        }
+        if (player.x < edgeBuffer) { return false; }
         return true;
     } else if (edge == "bottom") {
         var edgeBuffer = 390;
-        if (player.y < edgeBuffer) {
-            return false;
-        }
+        if (player.y < edgeBuffer) { return false; }
         return true;
     }
 }
 
-var playerAtRightEdge = function(player) {
-    var edgeBuffer = 400;
+var playerAdjacentToObstacle = function(player, direction, obstacles) {
+    if (direction == 'forward') {
 
-    if(player.x < edgeBuffer) {
-        return false;
+    } else if (direction == 'backward') {
+
+    } else if (direction == 'left') {
+
+    } else if (direction == 'right') {
+
     }
-    return true;
 }
-
 
 
 // Enemies our player must avoid
@@ -188,6 +182,9 @@ var Player = function () {
     this.yStartLocation = 400;
     this.y = this.yStartLocation;
 
+    this.xMovementDistance = 100;
+    this.yMovementDistance = 82;
+
     this.invincible = false;
 }
 
@@ -212,20 +209,21 @@ Player.prototype.handleInput = function (inputKey) {
     var yDistance = 82;
 
     if (inputKey === 'left') {
-        if (!playerAtCanvasEdge(this, 'left')) { // stop from going beyond canvas edge
-            this.x -= xDistance;
+        // stop from going beyond canvas edge and check for obstacles
+        if (!playerAtCanvasEdge(this, 'left')) {
+            this.x -= this.xMovementDistance;
         }
     } else if (inputKey === 'up') {
         if (!playerAtCanvasEdge(this, 'top')) {
-            this.y -= yDistance;
+            this.y -= this.yMovementDistance;
         }
     } else if (inputKey === 'right') {
         if (!playerAtCanvasEdge(this, 'right')) {
-            this.x += xDistance;
+            this.x += this.xMovementDistance;
         }
     } else if (inputKey === 'down') {
         if (!playerAtCanvasEdge(this, 'bottom')) {
-            this.y += yDistance;
+            this.y += this.yMovementDistance;
         }
     } else {
         console.log("Please use one of the arrow keys");
