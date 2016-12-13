@@ -92,6 +92,44 @@ var printGameState = function (gameState) {
     console.log('Score: ' + gameState.currentState.score);
 }
 
+var playerAtCanvasEdge = function(player, edge) {
+    if (edge == "left") {
+        var edgeBuffer = 50;
+        if (player.x > edgeBuffer) {
+            return false;
+        }
+        return true;
+    } else if (edge == "top") {
+        var edgeBuffer = 10;
+        if (player.y > edgeBuffer) {
+            return false;
+        }
+        return true;
+    } 
+    else if (edge == "right") {
+        var edgeBuffer = 400;
+        if (player.x < edgeBuffer) {
+            return false;
+        }
+        return true;
+    } else if (edge == "bottom") {
+        var edgeBuffer = 390;
+        if (player.y < edgeBuffer) {
+            return false;
+        }
+        return true;
+    }
+}
+
+var playerAtRightEdge = function(player) {
+    var edgeBuffer = 400;
+
+    if(player.x < edgeBuffer) {
+        return false;
+    }
+    return true;
+}
+
 
 
 // Enemies our player must avoid
@@ -174,19 +212,19 @@ Player.prototype.handleInput = function (inputKey) {
     var yDistance = 82;
 
     if (inputKey === 'left') {
-        if (this.x > 50) { // stop from going beyond canvas edge
+        if (!playerAtCanvasEdge(this, 'left')) { // stop from going beyond canvas edge
             this.x -= xDistance;
         }
     } else if (inputKey === 'up') {
-        if (this.y > 10) {
+        if (!playerAtCanvasEdge(this, 'top')) {
             this.y -= yDistance;
         }
     } else if (inputKey === 'right') {
-        if (this.x < 400) {
+        if (!playerAtCanvasEdge(this, 'right')) {
             this.x += xDistance;
         }
     } else if (inputKey === 'down') {
-        if (this.y < 390) {
+        if (!playerAtCanvasEdge(this, 'bottom')) {
             this.y += yDistance;
         }
     } else {
