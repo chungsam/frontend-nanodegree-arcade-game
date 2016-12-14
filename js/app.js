@@ -113,16 +113,32 @@ var playerAtCanvasEdge = function(player, edge) {
     }
 }
 
-var playerAdjacentToObstacle = function(player, direction, obstacles) {
-    if (direction == 'forward') {
+var playerAdjacentToObstacle = function(player, direction) {
+    var isAdjacent = false;
+    var xGapBuffer = 5;
+    var yGapBuffer = 15;
 
-    } else if (direction == 'backward') {
+    console.log(isAdjacent);
+
+    if (direction == 'up') {
+        var playerYCoordinateAhead = player.y - player.yMovementDistance;
+
+        allObstacles.forEach(function(obstacle) {
+            var xGap = Math.abs(player.x - obstacle.x); 
+            var yGap = playerYCoordinateAhead - obstacle.y;
+            if (xGap < xGapBuffer && yGap < yGapBuffer) { isAdjacent = true; }
+            console.log(obstacle.y, playerYCoordinateAhead, obstacle.x, player.x, isAdjacent);
+        });
+
+
+    } else if (direction == 'down') {
 
     } else if (direction == 'left') {
 
     } else if (direction == 'right') {
 
     }
+    return isAdjacent;
 }
 
 
@@ -210,11 +226,13 @@ Player.prototype.handleInput = function (inputKey) {
 
     if (inputKey === 'left') {
         // stop from going beyond canvas edge and check for obstacles
-        if (!playerAtCanvasEdge(this, 'left')) {
+        if (!playerAtCanvasEdge(this, 'left') &&
+            !playerAdjacentToObstacle(this, 'left')) {
             this.x -= this.xMovementDistance;
         }
     } else if (inputKey === 'up') {
-        if (!playerAtCanvasEdge(this, 'top')) {
+        if (!playerAtCanvasEdge(this, 'top') &&
+            !playerAdjacentToObstacle(this,'up')) {
             this.y -= this.yMovementDistance;
         }
     } else if (inputKey === 'right') {
