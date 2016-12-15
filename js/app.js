@@ -1,30 +1,25 @@
 // TODO:
 // Make game restart if player collides with enemy or reaches coast
 // Add gems and other items to get more points
-// Add start screen
-// Add level end screen
 // Add helper functions for random object placement
 
 // Start the game with default state
 var gameState = {
-    initialState: {
         level: 1,
         score: 0,
         highScore: 0
-    },
-    currentState: {}
-};
+    };
 
 var resetGameState = function (gameState) {
-    gameState.currentState.level = 1;
-    gameState.currentState.score = 0;
-    gameState.currentState.highScore = 0;
+    gameState.level = 1;
+    gameState.score = 0;
+    gameState.highScore = 0;
 }
 
 var startNewGame = function () {
     resetGameState(gameState);
 
-    loadEnemies();
+    // loadEnemies();
     loadBonusItems();
     loadObstacles();
 
@@ -63,12 +58,12 @@ var resetGame = function () {
 
 var advanceNextLevel = function () {
     player.resetPosition();
-    gameState.currentState.level += 1;
+    gameState.level += 1;
 
     allEnemies = [];
     loadEnemies();
 
-    console.log('Advancing to level ' + gameState.currentState.level);
+    console.log('Advancing to level ' + gameState.level);
 
     printGameState(gameState); // TODO: Remove after testing
 }
@@ -88,8 +83,8 @@ var randomXYPlacement = function (object) {
 
 var printGameState = function (gameState) {
     console.log('***Current State***');
-    console.log('Level: ' + gameState.currentState.level);
-    console.log('Score: ' + gameState.currentState.score);
+    console.log('Level: ' + gameState.level);
+    console.log('Score: ' + gameState.score);
 }
 
 var playerAtCanvasEdge = function(player, edge) {
@@ -113,30 +108,51 @@ var playerAtCanvasEdge = function(player, edge) {
     }
 }
 
+// Checks whether there is an obstacle ahead and prevents player
+// from going ahead if there is one
 var playerAdjacentToObstacle = function(player, direction) {
     var isAdjacent = false;
-    var xGapBuffer = 5;
+    var xGapBuffer = 15;
     var yGapBuffer = 15;
+    var playerXCoordinateAhead, playerXYCoordinateAhead;
 
     console.log(isAdjacent);
 
     if (direction == 'up') {
-        var playerYCoordinateAhead = player.y - player.yMovementDistance;
+        playerYCoordinateAhead = player.y - player.yMovementDistance;
 
         allObstacles.forEach(function(obstacle) {
             var xGap = Math.abs(player.x - obstacle.x); 
-            var yGap = playerYCoordinateAhead - obstacle.y;
+            var yGap = Math.abs(playerYCoordinateAhead - obstacle.y);
             if (xGap < xGapBuffer && yGap < yGapBuffer) { isAdjacent = true; }
-            console.log(obstacle.y, playerYCoordinateAhead, obstacle.x, player.x, isAdjacent);
         });
 
-
     } else if (direction == 'down') {
+        playerYCoordinateAhead = player.y + player.yMovementDistance;
+
+        allObstacles.forEach(function(obstacle) {
+            var xGap = Math.abs(player.x - obstacle.x); 
+            var yGap = Math.abs(playerYCoordinateAhead - obstacle.y);
+            if (xGap < xGapBuffer && yGap < yGapBuffer) { isAdjacent = true; }
+        });
 
     } else if (direction == 'left') {
+        playerXCoordinateAhead = player.x - player.xMovementDistance;
+
+        allObstacles.forEach(function(obstacle) {
+            var xGap = Math.abs(playerXCoordinateAhead - obstacle.x); 
+            var yGap = Math.abs(player.y - obstacle.y);
+            if (xGap < xGapBuffer && yGap < yGapBuffer) { isAdjacent = true; }
+        });
 
     } else if (direction == 'right') {
+        playerXCoordinateAhead = player.x + player.xMovementDistance;
 
+        allObstacles.forEach(function(obstacle) {
+            var xGap = Math.abs(playerXCoordinateAhead - obstacle.x); 
+            var yGap = Math.abs(player.y - obstacle.y);
+            if (xGap < xGapBuffer && yGap < yGapBuffer) { isAdjacent = true; }
+        });
     }
     return isAdjacent;
 }
@@ -157,7 +173,7 @@ var Enemy = function () {
     this.yStartLocation = 60 + (82 * Math.round(Math.random() * 2));
     this.y = this.yStartLocation;
 
-    this.movementSpeed = Math.random() * 2 * gameState.currentState.level;
+    this.movementSpeed = Math.random() * 2 * gameState.level;
 };
 
 
@@ -174,9 +190,9 @@ Enemy.prototype.update = function (dt) {
         (this.x += this.movementSpeed) * dt;
     }
 
-    drawScoreboard(gameState.currentState.level,
-        gameState.currentState.score,
-        gameState.currentState.highScore);
+    drawScoreboard(gameState.level,
+        gameState.score,
+        gameState.highScore);
 
 };
 
@@ -193,10 +209,10 @@ var Player = function () {
     this.sprite = 'images/char-boy.png';
 
     this.xStartLocation = (505 / 5) * 2;
-    this.x = this.xStartLocation;
-
     this.yStartLocation = 400;
+
     this.y = this.yStartLocation;
+    this.x = this.xStartLocation;
 
     this.xMovementDistance = 100;
     this.yMovementDistance = 82;
@@ -236,11 +252,13 @@ Player.prototype.handleInput = function (inputKey) {
             this.y -= this.yMovementDistance;
         }
     } else if (inputKey === 'right') {
-        if (!playerAtCanvasEdge(this, 'right')) {
+        if (!playerAtCanvasEdge(this, 'right') &&
+            !playerAdjacentToObstacle(this, 'right')) {
             this.x += this.xMovementDistance;
         }
     } else if (inputKey === 'down') {
-        if (!playerAtCanvasEdge(this, 'bottom')) {
+        if (!playerAtCanvasEdge(this, 'bottom') &&
+            !playerAdjacentToObstacle(this, 'down')) {
             this.y += this.yMovementDistance;
         }
     } else {
@@ -253,10 +271,9 @@ Player.prototype.resetPosition = function () {
     this.y = this.yStartLocation;
 }
 
-/**
- * Checks whether the Enemy collided with player
- */
 
+// Checks whether the Enemy collided with player
+ 
 Player.prototype.collidedWithEnemy = function (Enemies) {
     var collided = false;
 
