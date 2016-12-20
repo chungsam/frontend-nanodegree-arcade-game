@@ -43,6 +43,11 @@ var drawScoreboard = function (level, score, highScore) {
     ctx.fillText("Score: " + score, 400, 20);
 };
 
+var updateHighScore = function() {
+    if(gameState.score >= gameState.highScore) {
+        gameState.highScore = gameState.score;
+    }
+}
 
 var resetGame = function () {
     // TODO: add animation? (ie. make player spin or something)
@@ -62,9 +67,15 @@ var advanceNextLevel = function () {
     gameState.level += 1;
 
     allEnemies = [];
+    allBonusItems = [];
+    allObstacles = [];
     loadEnemies();
+    loadBonusItems();
+    loadObstacles();
 
-    console.log('Advancing to level ' + gameState.level);
+    updateHighScore();
+
+    console.log('Advancing to level ' + gameState.level); // TODO: Remove after testing
 
     printGameState(gameState); // TODO: Remove after testing
 }
