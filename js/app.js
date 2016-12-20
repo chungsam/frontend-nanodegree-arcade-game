@@ -5,10 +5,10 @@
 
 // Start the game with default state
 var gameState = {
-        level: 1,
-        score: 0,
-        highScore: 0
-    };
+    level: 1,
+    score: 0,
+    highScore: 0
+};
 
 var resetGameState = function (gameState) {
     gameState.level = 1;
@@ -19,7 +19,7 @@ var resetGameState = function (gameState) {
 var startNewGame = function () {
     resetGameState(gameState);
 
-    // loadEnemies();
+    loadEnemies();
     loadBonusItems();
     loadObstacles();
 
@@ -42,6 +42,7 @@ var drawScoreboard = function (level, score, highScore) {
     ctx.fillText("Level: " + level, 210, 20);
     ctx.fillText("Score: " + score, 400, 20);
 };
+
 
 var resetGame = function () {
     // TODO: add animation? (ie. make player spin or something)
@@ -87,71 +88,84 @@ var printGameState = function (gameState) {
     console.log('Score: ' + gameState.score);
 }
 
-var playerAtCanvasEdge = function(player, edge) {
+var playerAtCanvasEdge = function (player, edge) {
     if (edge == "left") {
         var edgeBuffer = 50;
-        if (player.x > edgeBuffer) { return false; }
+        if (player.x > edgeBuffer) {
+            return false;
+        }
         return true;
     } else if (edge == "top") {
         var edgeBuffer = 10;
-        if (player.y > edgeBuffer) { return false; }
+        if (player.y > edgeBuffer) {
+            return false;
+        }
         return true;
-    } 
-    else if (edge == "right") {
+    } else if (edge == "right") {
         var edgeBuffer = 400;
-        if (player.x < edgeBuffer) { return false; }
+        if (player.x < edgeBuffer) {
+            return false;
+        }
         return true;
     } else if (edge == "bottom") {
         var edgeBuffer = 390;
-        if (player.y < edgeBuffer) { return false; }
+        if (player.y < edgeBuffer) {
+            return false;
+        }
         return true;
     }
 }
 
 // Checks whether there is an obstacle ahead and prevents player
 // from going ahead if there is one
-var playerAdjacentToObstacle = function(player, direction) {
+var playerAdjacentToObstacle = function (player, direction) {
     var isAdjacent = false;
     var xGapBuffer = 15;
     var yGapBuffer = 15;
-    var playerXCoordinateAhead, playerXYCoordinateAhead;
-
-    console.log(isAdjacent);
+    var playerXCoordinateAhead, playerYCoordinateAhead;
 
     if (direction == 'up') {
         playerYCoordinateAhead = player.y - player.yMovementDistance;
 
-        allObstacles.forEach(function(obstacle) {
-            var xGap = Math.abs(player.x - obstacle.x); 
+        allObstacles.forEach(function (obstacle) {
+            var xGap = Math.abs(player.x - obstacle.x);
             var yGap = Math.abs(playerYCoordinateAhead - obstacle.y);
-            if (xGap < xGapBuffer && yGap < yGapBuffer) { isAdjacent = true; }
+            if (xGap < xGapBuffer && yGap < yGapBuffer) {
+                isAdjacent = true;
+            }
         });
 
     } else if (direction == 'down') {
         playerYCoordinateAhead = player.y + player.yMovementDistance;
 
-        allObstacles.forEach(function(obstacle) {
-            var xGap = Math.abs(player.x - obstacle.x); 
+        allObstacles.forEach(function (obstacle) {
+            var xGap = Math.abs(player.x - obstacle.x);
             var yGap = Math.abs(playerYCoordinateAhead - obstacle.y);
-            if (xGap < xGapBuffer && yGap < yGapBuffer) { isAdjacent = true; }
+            if (xGap < xGapBuffer && yGap < yGapBuffer) {
+                isAdjacent = true;
+            }
         });
 
     } else if (direction == 'left') {
         playerXCoordinateAhead = player.x - player.xMovementDistance;
 
-        allObstacles.forEach(function(obstacle) {
-            var xGap = Math.abs(playerXCoordinateAhead - obstacle.x); 
+        allObstacles.forEach(function (obstacle) {
+            var xGap = Math.abs(playerXCoordinateAhead - obstacle.x);
             var yGap = Math.abs(player.y - obstacle.y);
-            if (xGap < xGapBuffer && yGap < yGapBuffer) { isAdjacent = true; }
+            if (xGap < xGapBuffer && yGap < yGapBuffer) {
+                isAdjacent = true;
+            }
         });
 
     } else if (direction == 'right') {
         playerXCoordinateAhead = player.x + player.xMovementDistance;
 
-        allObstacles.forEach(function(obstacle) {
-            var xGap = Math.abs(playerXCoordinateAhead - obstacle.x); 
+        allObstacles.forEach(function (obstacle) {
+            var xGap = Math.abs(playerXCoordinateAhead - obstacle.x);
             var yGap = Math.abs(player.y - obstacle.y);
-            if (xGap < xGapBuffer && yGap < yGapBuffer) { isAdjacent = true; }
+            if (xGap < xGapBuffer && yGap < yGapBuffer) {
+                isAdjacent = true;
+            }
         });
     }
     return isAdjacent;
@@ -216,8 +230,6 @@ var Player = function () {
 
     this.xMovementDistance = 100;
     this.yMovementDistance = 82;
-
-    this.invincible = false;
 }
 
 Player.prototype.update = function (dt) {
@@ -226,9 +238,11 @@ Player.prototype.update = function (dt) {
 
     if (this.collidedWithEnemy(allEnemies)) {
         resetGame();
-    } else if (this.WaterReached()) {
+    } else if (this.reachedWater()) {
         advanceNextLevel();
     }
+
+    this.checkForBonusItem();
 
 }
 
@@ -248,7 +262,7 @@ Player.prototype.handleInput = function (inputKey) {
         }
     } else if (inputKey === 'up') {
         if (!playerAtCanvasEdge(this, 'top') &&
-            !playerAdjacentToObstacle(this,'up')) {
+            !playerAdjacentToObstacle(this, 'up')) {
             this.y -= this.yMovementDistance;
         }
     } else if (inputKey === 'right') {
@@ -273,7 +287,7 @@ Player.prototype.resetPosition = function () {
 
 
 // Checks whether the Enemy collided with player
- 
+
 Player.prototype.collidedWithEnemy = function (Enemies) {
     var collided = false;
 
@@ -296,12 +310,32 @@ Player.prototype.collidedWithEnemy = function (Enemies) {
     return collided;
 }
 
-Player.prototype.WaterReached = function () {
+Player.prototype.reachedWater = function () {
     var yWaterPosition = 50;
     if (this.y < yWaterPosition) {
         console.log('Water reached!'); // TODO: Remove after testing
         return true;
     }
+}
+
+Player.prototype.checkForBonusItem = function () {
+    var reachedItem = false;
+    var xGapBuffer = 15;
+    var yGapBuffer = 15;
+    var playerXCoordinateAhead, playerYCoordinateAhead;
+
+    allBonusItems.forEach(function (item) {
+        var xGap = Math.abs(player.x - item.x);
+        var yGap = Math.abs(player.y - item.y);
+
+        if (xGap < xGapBuffer && yGap < yGapBuffer) {
+            var index = allBonusItems.indexOf(item);
+            allBonusItems.splice(index, 1);
+
+            gameState.score += item.bonusPoints;
+        }
+
+    });
 }
 
 // Bonus Items
@@ -320,7 +354,7 @@ BlueGem.prototype.render = function () {
 
 BlueGem.prototype.bonusPoints = 50;
 
-// A star that makes the player invincible
+// A star that awards 100 points
 var Star = function () {
     this.sprite = 'images/Star.png';
 
@@ -334,12 +368,7 @@ Star.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-Star.prototype.giveInvincibility = function () {
-    if (this.x === player.x &
-        this.y === player.y) {
-        player.invincible = true;
-    }
-}
+Star.prototype.bonusPoints = 100;
 
 // Load all the bonus items
 var loadBonusItems = function () {
@@ -353,7 +382,7 @@ var allObstacles = [];
 
 var Rock = function () {
     this.sprite = 'images/Rock.png';
-    
+
     randomXYPlacement(this);
 }
 
