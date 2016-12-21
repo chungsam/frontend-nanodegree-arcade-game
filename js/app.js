@@ -13,7 +13,6 @@ var gameState = {
 var resetGameState = function (gameState) {
     gameState.level = 1;
     gameState.score = 0;
-    gameState.highScore = 0;
 }
 
 var startNewGame = function () {
@@ -226,6 +225,9 @@ Enemy.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
+Enemy.prototype.spriteWidth = 80;
+Enemy.prototype.spriteHeight = 85;
+
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -242,6 +244,8 @@ var Player = function () {
     this.xMovementDistance = 100;
     this.yMovementDistance = 82;
 }
+
+Player.prototype.spriteWidth = 80;
 
 Player.prototype.update = function (dt) {
     this.x * dt;
@@ -303,14 +307,14 @@ Player.prototype.collidedWithEnemy = function (Enemies) {
     var collided = false;
 
     Enemies.forEach(function (enemy) {
-        // TODO: adjust sprite width and height
-        var spriteWidth = 100;
-        var spriteHeight = 100;
+        // // TODO: adjust sprite width and height
+        // var spriteWidth = 100;
+        // var spriteHeight = 100;
 
-        if (player.x >= enemy.x &&
-            player.x < enemy.x + spriteWidth &&
+        if (player.x + player.spriteWidth >= enemy.x &&
+            player.x < enemy.x + enemy.spriteWidth &&
             player.y >= enemy.y &&
-            player.y < enemy.y + spriteHeight
+            player.y < enemy.y + enemy.spriteHeight
         ) {
             console.log('COLLIDED!'); // TODO: Remove after testing
             collided = true;
