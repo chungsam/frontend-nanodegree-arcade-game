@@ -67,7 +67,6 @@ var advanceNextLevel = function () {
 
     updateHighScore();
 
-    printGameState(gameState); // TODO: Remove after testing
 }
 
 /**
@@ -214,6 +213,19 @@ var Enemy = function () {
     this.movementSpeed = Math.random() * 2 * gameState.level;
 };
 
+// Check collision with player.
+Enemy.prototype.checkCollisions = function() {
+    var collided = false;
+
+    if (player.x + player.spriteWidth >= this.x &&
+            player.x < this.x + this.spriteWidth &&
+            player.y >= this.y &&
+            player.y < this.y + this.spriteHeight
+        ) {
+            collided = true;
+        }
+    return collided;
+}
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -222,10 +234,16 @@ Enemy.prototype.update = function (dt) {
     // which will ensure the game runs at the same speed for
     // all computers.
 
+    // Sprite movement. Also make sprite reappear from opposite edge 
+    // when it goes beyond canvas edge.
     if (this.x > 606) {
         this.x = 0;
     } else {
         (this.x += this.movementSpeed) * dt;
+    }
+
+    if (this.checkCollisions()) {
+        resetGame();
     }
 
 
@@ -236,7 +254,8 @@ Enemy.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
 
-
+// Explicitly hardcoded width and height because the sprite image size
+// didn't correspond with the actual size of the sprite.
 Enemy.prototype.spriteWidth = 80;
 Enemy.prototype.spriteHeight = 85;
 
@@ -263,9 +282,7 @@ Player.prototype.update = function (dt) {
     this.x * dt;
     this.y * dt;
 
-    if (this.collidedWithEnemy(allEnemies)) {
-        resetGame();
-    } else if (this.reachedWater()) {
+    if (this.reachedWater()) {
         advanceNextLevel();
     }
 
@@ -316,29 +333,9 @@ Player.prototype.resetPosition = function () {
     this.y = this.yStartLocation;
 }
 
-
-// Checks whether the Enemy collided with player
-Player.prototype.collidedWithEnemy = function (Enemies) {
-    var collided = false;
-
-    Enemies.forEach(function (enemy) {
-        if (player.x + player.spriteWidth >= enemy.x &&
-            player.x < enemy.x + enemy.spriteWidth &&
-            player.y >= enemy.y &&
-            player.y < enemy.y + enemy.spriteHeight
-        ) {
-            console.log('COLLIDED!'); // TODO: Remove after testing
-            collided = true;
-        }
-
-    })
-    return collided;
-}
-
 Player.prototype.reachedWater = function () {
     var yWaterPosition = 50;
     if (this.y < yWaterPosition) {
-        console.log('Water reached!'); // TODO: Remove after testing
         return true;
     }
 }
