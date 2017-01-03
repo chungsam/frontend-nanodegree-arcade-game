@@ -356,7 +356,6 @@ Player.prototype.checkForBonusItem = function () {
 
             gameState.score += item.bonusPoints;
         }
-
     });
 }
 
