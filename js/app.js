@@ -1,7 +1,6 @@
-// TODO:
-// Make game restart if player collides with enemy or reaches coast
-// Add gems and other items to get more points
-// Add helper functions for random object placement
+/**
+ * Code related to the general loading and running of the game.
+ */
 
 // Start the game with default state
 var gameState = {
@@ -23,15 +22,10 @@ var startNewGame = function () {
     loadObstacles();
 
     player = new Player();
-
-    printGameState(gameState); // TODO: Remove after testing
 };
 
-// Show the score
+// Show the high score, level, and current score
 var drawScoreboard = function (level, score, highScore) {
-    // TODO: clear text for previous score/level
-    // and rename function to something else
-
     ctx.font = "20px Helvetica";
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, 600, 50); // Clear the previous stroke for level and score
@@ -42,15 +36,13 @@ var drawScoreboard = function (level, score, highScore) {
     ctx.fillText("Score: " + score, 400, 20);
 };
 
-var updateHighScore = function() {
-    if(gameState.score >= gameState.highScore) {
+var updateHighScore = function () {
+    if (gameState.score >= gameState.highScore) {
         gameState.highScore = gameState.score;
     }
 }
 
 var resetGame = function () {
-    // TODO: add animation? (ie. make player spin or something)
-    // player.resetPosition();
     allEnemies = [];
     allBonusItems = [];
     allObstacles = [];
@@ -65,6 +57,7 @@ var advanceNextLevel = function () {
     player.resetPosition();
     gameState.level += 1;
 
+    // Reload all enemies, bonus items, and obstacles
     allEnemies = [];
     allBonusItems = [];
     allObstacles = [];
@@ -74,30 +67,40 @@ var advanceNextLevel = function () {
 
     updateHighScore();
 
-    console.log('Advancing to level ' + gameState.level); // TODO: Remove after testing
-
     printGameState(gameState); // TODO: Remove after testing
 }
 
-// Helper functions
+/**
+ * Some helper functions for functions I was repeatedly using
+ */
+
+// Function to randomize x and y placement of static sprites.
+// In the future, this may be refactored to include moving objects
+// (i.e. enemies), but wasn't currently included as I found it more convenient
+// to leave those randomize functions in their respective constructors.
 var randomXYPlacement = function (object) {
-    // Coordinates are different for moving items vs. static items
     if (object instanceof Star |
         object instanceof Rock |
         object instanceof BlueGem) {
         object.x = Math.round(Math.random() * 4) * 100;
         object.y = 60 + (Math.round(Math.random() * 2) * 82);
-
     }
-
 }
 
-var printGameState = function (gameState) {
-    console.log('***Current State***');
-    console.log('Level: ' + gameState.level);
-    console.log('Score: ' + gameState.score);
-}
+// For debug purposes, prints the game state in the console
+// var printGameState = function (gameState) {
+//     console.log('***Current State***');
+//     console.log('Level: ' + gameState.level);
+//     console.log('Score: ' + gameState.score);
+// }
 
+
+// Checks whether the player is at the canvas edge
+// to prevent the sprite from going beyond the canvas boundaries.
+//
+// edgeBuffer variables refer to a kind of "padding" distance from the respective
+// edge, and uses hard-coded values that I find "just work". This can probably
+// be refactored to make the function more simple. 
 var playerAtCanvasEdge = function (player, edge) {
     if (edge == "left") {
         var edgeBuffer = 50;
@@ -127,7 +130,12 @@ var playerAtCanvasEdge = function (player, edge) {
 }
 
 // Checks whether there is an obstacle ahead and prevents player
-// from going ahead if there is one
+// from going ahead if there is one.
+//
+// xGap and yGap were used because there is some padding within the 
+// rectangular sprite image boundaries for the sprite itself
+// (i.e. the image boundaries have some empty space between the edges
+// and the actual picture of the sprite itself.)
 var playerAdjacentToObstacle = function (player, direction) {
     var isAdjacent = false;
     var xGapBuffer = 15;
@@ -182,7 +190,13 @@ var playerAdjacentToObstacle = function (player, direction) {
 }
 
 
-// Enemies our player must avoid
+/**
+ * Game objects
+ */
+
+// Enemies our player must avoid. Constructor includes random x y placement
+// and random movement speeds to make the game more interesting.
+
 var Enemy = function () {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
@@ -214,9 +228,6 @@ Enemy.prototype.update = function (dt) {
         (this.x += this.movementSpeed) * dt;
     }
 
-    drawScoreboard(gameState.level,
-        gameState.score,
-        gameState.highScore);
 
 };
 
@@ -224,6 +235,7 @@ Enemy.prototype.update = function (dt) {
 Enemy.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
+
 
 Enemy.prototype.spriteWidth = 80;
 Enemy.prototype.spriteHeight = 85;
@@ -258,6 +270,10 @@ Player.prototype.update = function (dt) {
     }
 
     this.checkForBonusItem();
+
+    drawScoreboard(gameState.level,
+                    gameState.score,
+                    gameState.highScore);
 
 }
 
@@ -302,15 +318,10 @@ Player.prototype.resetPosition = function () {
 
 
 // Checks whether the Enemy collided with player
-
 Player.prototype.collidedWithEnemy = function (Enemies) {
     var collided = false;
 
     Enemies.forEach(function (enemy) {
-        // // TODO: adjust sprite width and height
-        // var spriteWidth = 100;
-        // var spriteHeight = 100;
-
         if (player.x + player.spriteWidth >= enemy.x &&
             player.x < enemy.x + enemy.spriteWidth &&
             player.y >= enemy.y &&
@@ -321,7 +332,6 @@ Player.prototype.collidedWithEnemy = function (Enemies) {
         }
 
     })
-
     return collided;
 }
 
@@ -369,6 +379,7 @@ BlueGem.prototype.render = function () {
 
 BlueGem.prototype.bonusPoints = 50;
 
+
 // A star that awards 100 points
 var Star = function () {
     this.sprite = 'images/Star.png';
@@ -392,9 +403,10 @@ var loadBonusItems = function () {
 }
 
 
-// Obstacles
+// Obstacles that block player movement
 var allObstacles = [];
 
+// Rock object
 var Rock = function () {
     this.sprite = 'images/Rock.png';
 
@@ -404,6 +416,10 @@ var Rock = function () {
 Rock.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
+
+/**
+ * Load and start the game
+ */
 
 var loadObstacles = function () {
     allObstacles.push(new Rock());
@@ -416,7 +432,6 @@ var loadEnemies = function () {
     for (i = 0; i < 3; i++) {
         allEnemies.push(new Enemy());
     }
-
 }
 
 // This listens for key presses and sends the keys to your
