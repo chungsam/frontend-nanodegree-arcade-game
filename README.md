@@ -23,18 +23,18 @@ You move the player by using any one of the arrow keys:
 
 Key | What It Does
 --- | ------------
-Up :arrow_up: | Moves player up (vertical)
-Down :arrow_down: | Moves player down (vertical)
-Left :arrow_left: | Moves player left (horizontal)
-Right :arrow_right: | Moves player right (horizontal)
+Up      :arrow_up: | Moves player up (vertical)
+Down    :arrow_down: | Moves player down (vertical)
+Left    :arrow_left: | Moves player left (horizontal)
+Right   :arrow_right: | Moves player right (horizontal)
 
 ### Bonus Items and Points
 The current version of the game has the following bonus items:
 
-Item | Points Awarded
+Item | Sprite | Points Awarded
 ---- | --------------
-Blue Gem ![Blue Gem](/images/Gem Blue.png) | 50
-Star ![Star](/images/Star.png) | 100
+Blue Gem | ![Blue Gem](/images/Gem Blue.png) | 50
+Star | ![Star](/images/Star.png) | 100
 
 ### Added Features
 These simple and optional features were added on top of the basic requirements outlined by the original Udacity project:
