@@ -1,11 +1,5 @@
-frontend-nanodegree-arcade-game
+Frogger Game Clone
 ===============================
-
-Students should use this [rubric](https://review.udacity.com/#!/projects/2696458597/rubric) for self-checking their submission. Make sure the functions you write are **object-oriented** - either class functions (like Player and Enemy) or class prototype functions such as Enemy.prototype.checkCollisions, and that the keyword 'this' is used appropriately within your class and class prototype functions to refer to the object the function is called upon. Also be sure that the **readme.md** file is updated with your instructions on both how to 1. Run and 2. Play your arcade game.
-
-For detailed instructions on how to get started, check out this [guide](https://docs.google.com/document/d/1v01aScPjSWCCWQLIpFqvg3-vXLH2e8_SZQKC8jNO0Dc/pub?embedded=true).
-
-## Overview
 This is a frogger game clone that was built as part of Udacity's [Front-End Nanodegree program](https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001). It was intially forked 
 from this repository: https://github.com/udacity/frontend-nanodegree-arcade-game.
 
@@ -32,15 +26,15 @@ Right   :arrow_right: | Moves player right (horizontal)
 The current version of the game has the following bonus items:
 
 Item | Sprite | Points Awarded
----- | --------------
+---- | ------ | --------------
 Blue Gem | ![Blue Gem](/images/Gem Blue.png) | 50
 Star | ![Star](/images/Star.png) | 100
 
-### Added Features
+## Added Features
 These simple and optional features were added on top of the basic requirements outlined by the original Udacity project:
 
-* A Simple dashboard that tracks high score, current level, and current score values.
-* Additional of bonus items that award points, and obstacles that block player movement.
-* Random placement of all enemies, bonus items and obstacles at the start of each level.
-* Random assignment of movement speeds for all enemies, with the potential max speed increasing as the levels advance.
+* A Simple dashboard that tracks high score, current level, and current score values
+* Additional of bonus items that award points, and obstacles that block player movement
+* Random placement of all enemies, bonus items and obstacles at the start of each level
+* Random assignment of movement speeds for all enemies, with the potential max speed increasing as the levels advance
 
