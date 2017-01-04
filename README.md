@@ -30,6 +30,13 @@ Item | Sprite | Points Awarded
 Blue Gem | ![Blue Gem](/images/Gem Blue.png) | 50
 Star | ![Star](/images/Star.png) | 100
 
+### Obstacles
+The current version of the game has the following obstacles:
+
+Item | Sprite | What It Does
+---- | ------ | ------------
+Rock | ![Rock](images/Rock.png) | Blocks player from going past it
+
 ## Added Features
 These optional features were added on top of the basic requirements outlined by the original Udacity project:
 
