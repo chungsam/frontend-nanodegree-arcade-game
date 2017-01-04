@@ -1,12 +1,19 @@
 Frogger Game Clone
 ===============================
+#### By Sam Chung
+
 This is a frogger game clone that was built as part of Udacity's [Front-End Nanodegree program](https://www.udacity.com/course/front-end-web-developer-nanodegree--nd001). It was intially forked 
 from this repository: https://github.com/udacity/frontend-nanodegree-arcade-game.
+
+The original repo provided the main game engine, absent of any game logic, as well as example sprite images. I implemented all the necessary game logic, as well as 
+added some optional features beyond the original requirements of the project.
 
 ## Running the game
 Running the game is simple: fork/clone the repo locally, then open the [index.html](index.html) file in a browser of your choice.
 
 ## How to Play
+
+### Game Objective
 The objective of the game is to get as many points as you can before you collide with the bugs that moving across the screen. 
 You get points by moving the player to one of the bonus items that appear on the screen.
 
