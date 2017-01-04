@@ -381,9 +381,6 @@ var Star = function () {
     this.sprite = 'images/Star.png';
 
     randomXYPlacement(this);
-
-    console.log(this.x);
-    console.log(this.y);
 }
 
 Star.prototype.render = function () {

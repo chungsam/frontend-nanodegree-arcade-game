@@ -31,10 +31,10 @@ Blue Gem | ![Blue Gem](/images/Gem Blue.png) | 50
 Star | ![Star](/images/Star.png) | 100
 
 ## Added Features
-These simple and optional features were added on top of the basic requirements outlined by the original Udacity project:
+These optional features were added on top of the basic requirements outlined by the original Udacity project:
 
 * A Simple dashboard that tracks high score, current level, and current score values
-* Additional of bonus items that award points, and obstacles that block player movement
+* Bonus items that award points, and obstacles that block player movement
 * Random placement of all enemies, bonus items and obstacles at the start of each level
 * Random assignment of movement speeds for all enemies, with the potential max speed increasing as the levels advance
 
